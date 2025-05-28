@@ -1,7 +1,12 @@
 function BookCard({ book }) {
   return (
-    <div className='w-64 h-128 book-card border border-solid rounded-lg p-4 m-4 shadow-lg flex flex-col items-center justify-center'>
-      <img src={book.image_url} alt={book.title} className='h-64 w-48 m-4' />
+    <div className='w-64 h-108 book-card border border-solid rounded-lg p-4 m-4 shadow-lg flex flex-col items-center justify-center'>
+      <img
+        src={book.image_url}
+        alt={book.title}
+        className='h-48 w-36 m-4'
+        loading='lazy'
+      />
       <h2 className='font-semibold text-center italic'>{book.title}</h2>
       <p>Author: {book.author}</p>
       <p>Published: {book.year}</p>

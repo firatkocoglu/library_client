@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import BookCard from './BookCard';
 import PageButtons from './PageButtons';
 import Navbar from './Navbar';
+import Loading from './Loading';
 import useStore from '../store';
 
 function Books() {
@@ -49,19 +50,28 @@ function Books() {
         <h1 className='text-3xl font-bold text-center my-8'>
           {user ? `Welcome, ${user.name}!` : 'Welcome to the Book Store'}
         </h1>
-        <ul className='books-list flex flex-wrap justify-center gap-4'>
-          {books.map((book) => (
-            <li key={book.id}>
-              <BookCard book={book} />
-            </li>
-          ))}
-        </ul>
+        {loading ? (
+          <Loading />
+        ) : (
+          <>
+            <ul className='books-list flex flex-wrap justify-center gap-4'>
+              {books.map((book) => (
+                <li key={book.id}>
+                  <BookCard book={book} />
+                </li>
+              ))}
+            </ul>
+            <PageButtons
+              currentPage={page}
+              onPageChange={handlePageChange}
+              totalPages={totalPages}
+            />
+          </>
+        )}
+        {!loading && books.length === 0 && (
+          <p className='no-books-text'>No books available at the moment.</p>
+        )}
       </div>
-      <PageButtons
-        currentPage={page}
-        onPageChange={handlePageChange}
-        totalPages={totalPages}
-      />
     </section>
   );
 }
