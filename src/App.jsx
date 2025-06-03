@@ -1,43 +1,22 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
-import ProtectedRoute from './components/ProtectedRoute';
-import PublicOnly from './components/PublicOnly';
-import Login from './components/auth/Login';
-import Books from './components/Books';
+import Navbar from './components/Navbar.jsx';
+import Sidebar from './components/Sidebar.jsx';
+import { Outlet, useLoaderData } from 'react-router-dom';
 
-function App() {
+export default function App() {
+  const { genres } = useLoaderData();
+
   return (
-    <>
-      <Router>
-        <Routes>
-          <Route
-            path='/login'
-            element={
-              <PublicOnly>
-                <Login />
-              </PublicOnly>
-            }
-          />
-          <Route
-            path='/logout'
-            element={
-              <PublicOnly>
-                <Login />
-              </PublicOnly>
-            }
-          />
-          <Route
-            path='/'
-            element={
-              <ProtectedRoute>
-                <Books />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </Router>
-    </>
+    <div className='flex h-screen'>
+      <main>
+        <div className=' w-full'>
+          <Navbar />
+        </div>
+        <div className='flex'>
+          <Sidebar genres={genres} />
+          <Outlet />
+        </div>
+      </main>
+    </div>
   );
 }
-
-export default App;

@@ -1,4 +1,4 @@
-import useStore from '../store';
+import useStore from '../persistentStore';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 axios.defaults.baseURL = 'http://localhost:3000';
@@ -10,16 +10,15 @@ const Navbar = () => {
       await axios.get('/auth/logout', {
         withCredentials: true,
       });
-
       setUser(null);
-
       window.location.href = '/';
     } catch (error) {
       console.error('Logout failed:', error);
     }
   };
+
   return (
-    <nav className='w-full bg-white shadow-md px-8 py-4 flex items-center justify-between'>
+    <nav className='w-screen bg-white shadow-md px-8 py-4 flex items-center justify-between'>
       <div className='container mx-auto flex justify-between items-center'>
         <h1 className='text-xl font-bold'>Library</h1>
         <ul className='flex space-x-4'>

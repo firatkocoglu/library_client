@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useStore from '../../store';
+import useStore from '../../persistentStore';
 
 // Set the base URL for axios requests
 axios.defaults.baseURL = 'http://localhost:3000';

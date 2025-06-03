@@ -1,57 +1,25 @@
-import { useState } from 'react';
-import { useEffect } from 'react';
+import { useLoaderData, Link, useNavigation } from 'react-router-dom';
 import BookCard from './BookCard';
-import PageButtons from './PageButtons';
-import Navbar from './Navbar';
 import Loading from './Loading';
-import useStore from '../store';
+import { useSearchParams } from 'react-router-dom';
 
 function Books() {
-  const [loading, setLoading] = useState(false);
-  const [books, setBooks] = useState([]);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
+  const { books, page, totalPages } = useLoaderData();
+  console.log(books);
 
-  const user = useStore((state) => state.user);
+  const navigation = useNavigation();
+  const loading = navigation.state === 'loading';
 
-  const fetchBooks = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch(`http://localhost:3000/books?page=${page}`);
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const data = await response.json();
-      setBooks(data.books);
-      setTotalPages(data.totalPages);
-    } catch (error) {
-      console.error('Error fetching books:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchBooks();
-  }, [page]);
-
-  const handlePageChange = (newPage) => {
-    setPage(newPage);
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
-  };
+  const [searchParams] = useSearchParams();
+  const genre = searchParams.get('genre') || '';
 
   return (
-    <section className='books-section flex flex-col items-center justify-center'>
-      <Navbar />
+    <section className='books-section flex items-center justify-center'>
       <div>
-        <h1 className='text-3xl font-bold text-center my-8'>
-          {user ? `Welcome, ${user.name}!` : 'Welcome to the Book Store'}
-        </h1>
         {loading ? (
-          <Loading />
+          <div className='loading-container flex items-center justify-center h-screen'>
+            <Loading />
+          </div>
         ) : (
           <>
             <ul className='books-list flex flex-wrap justify-center gap-4'>
@@ -61,15 +29,53 @@ function Books() {
                 </li>
               ))}
             </ul>
-            <PageButtons
-              currentPage={page}
-              onPageChange={handlePageChange}
-              totalPages={totalPages}
-            />
+            <div className='flex space-x-2 m-4 justify-center items-center'>
+              {page - 1 > 1 && (
+                <>
+                  <Link
+                    to={`?page=1` + (genre && `&genre=${genre}`)}
+                    className='px-3 py-1 bg-gray-200 rounded hover:bg-gray-300'
+                  >
+                    1
+                  </Link>
+                  <span className='px-3 py-1'>...</span>
+                </>
+              )}
+              {page > 1 && (
+                <Link
+                  to={`?page=${page - 1}` + (genre && `&genre=${genre}`)}
+                  className='px-3 py-1 bg-gray-200 rounded hover:bg-gray-300'
+                >
+                  {page - 1}
+                </Link>
+              )}
+              <Link
+                to={`?page=${page}` + (genre && `&genre=${genre}`)}
+                className='px-3 py-1 bg-gray-400 rounded hover:bg-gray-300'
+              >
+                {page}
+              </Link>
+              {page < totalPages && (
+                <Link
+                  to={`?page=${page + 1}` + (genre && `&genre=${genre}`)}
+                  className='px-3 py-1 bg-gray-200 rounded hover:bg-gray-300'
+                >
+                  {page + 1}
+                </Link>
+              )}
+              {page + 1 < totalPages && (
+                <>
+                  <span className='px-3 py-1'>...</span>
+                  <Link
+                    to={`?page=${totalPages}` + (genre && `&genre=${genre}`)}
+                    className='px-3 py-1 bg-gray-200 rounded hover:bg-gray-300'
+                  >
+                    {totalPages}
+                  </Link>
+                </>
+              )}
+            </div>
           </>
-        )}
-        {!loading && books.length === 0 && (
-          <p className='no-books-text'>No books available at the moment.</p>
         )}
       </div>
     </section>
